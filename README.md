@@ -11,6 +11,11 @@ A lightweight PHP script to monitor and report system metrics including CPU load
 * **MySQL Status Check**: Verifies database connectivity using MySQLi and reports server version.
 * **Threshold Warnings**: Configurable alert thresholds for high CPU, low memory, low disk space, and long uptime.
 
+## RoadMap
+- [ ] check version of php extentions 
+- [ ] ReDesign
+- [ ] Add to uptime-kuma guideline
+
 ## Prerequisites
 
 * PHP 7.4 or higher with the following extensions enabled:
