@@ -139,8 +139,8 @@ class ServerMonitor {
         }
 
         $rootDisk = $this->getDiskInfo("/");
-        if (($rootDisk['free'] / $rootDisk['total']) * 100 < 10) {
-            $this->issues[] = "Disk «/» Free < 10%";
+        if (($rootDisk['free'] / $rootDisk['total']) * 100 < 20) {
+            $this->issues[] = "Disk «/» Free < 20%";
         }
 
         $tmpDisk = $this->getDiskInfo("/tmp/");
@@ -148,7 +148,7 @@ class ServerMonitor {
             $this->issues[] = "/tmp Free < 20%";
         }
 
-        $homeDisk = $this->getDiskInfo($this->linuxhome);
+        $homeDisk = $this->getDiskInfo("/home");
         if (($homeDisk['free'] / $homeDisk['total']) * 100 < 20) {
             $this->issues[] = "/home Free < 20%";
         }
@@ -364,7 +364,7 @@ echo "</pre>";
                 <div class="info-item">
                     <span class="info-label">Version:</span>
                
-                    <span> 1.3 / 2025/05/31 </span>
+                    <span> 1.4 / 2026-01-27 </span>
                 </div>
                 <div class="info-item">
                     <span class="info-label">Hostname:</span>
@@ -457,30 +457,32 @@ echo "</pre>";
             <div class="info-grid">
                 <?php
                 $diskPaths = [
-                    'root' => $rootDisk,
-                    'home' => $homeDisk,
-                    'tmp' => $tmpDisk
+                    '/' => $rootDisk,
+                    '/home' => $homeDisk,
+                    '/tmp' => $tmpDisk
                 ];
                 foreach ($diskPaths as $label => $disk):
                     $usedPercent = round(($disk['used'] / $disk['total']) * 100, 2);
+                    $freePercent = 100 - $usedPercent;
                 ?>
                 <div class="info-item">
-                    <span class="info-label">/<?php echo $label; ?>:</span>
+                    <span class="info-label"><?php echo $label; ?></span>
                 </div>
                 <div class="info-grid" style="padding-left: 15px;">
                     <div class="info-item">
                         <span>Total: <?php echo $monitor->formatBytes($disk['total']); ?></span>
                     </div>
                     <div class="info-item">
-                        <span>Used: <?php echo $monitor->formatBytes($disk['used']); ?></span>
+                       <span>Used: <?php echo $monitor->formatBytes($disk['used']); ?> (<?php echo $usedPercent; ?>%)</span>
                     </div>
                     <div class="info-item">
-                        <span>Free: <?php echo $monitor->formatBytes($disk['free']); ?></span>
+                        <span>Free: <?php echo $monitor->formatBytes($disk['free']); ?>  (<?php echo $freePercent; ?>%)</span>
                     </div>
                     <div class="progress-bar">
-                        <div class="progress-fill <?php echo $usedPercent > 90 ? 'critical' : ($usedPercent > 80 ? 'warning-fill' : ''); ?>" 
+                        <div class="progress-fill <?php echo $usedPercent > 80 ? 'critical' : ($usedPercent > 60 ? 'warning-fill' : ''); ?>" 
                              style="width: <?php echo $usedPercent; ?>%"></div>
                     </div>
+                    
                 </div>
                 <?php endforeach; ?>
             </div>
